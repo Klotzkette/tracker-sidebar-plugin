@@ -1,21 +1,26 @@
-/* Tracker Sidebar */
+/* ============================================================
+   Tracker Viewer – Sidebar Stylesheet
+   Premium dark theme with glassmorphism accents
+   ============================================================ */
+
+/* ---- Container ---- */
 #tracker-sidebar-container {
   position: fixed;
   top: 0;
   right: 0;
-  width: 380px;
+  width: 400px;
   height: 100vh;
   z-index: 2147483647;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 13px;
-  line-height: 1.4;
-  color: #e0e0e0;
-  background: #1a1a2e;
-  border-left: 2px solid #16213e;
-  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.4);
+  line-height: 1.5;
+  color: #c8c8e0;
+  background: linear-gradient(180deg, #12122a 0%, #1a1a34 100%);
+  border-left: 1px solid rgba(255,255,255,0.06);
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.5);
   overflow-y: auto;
   overflow-x: hidden;
-  transition: transform 0.3s ease;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   box-sizing: border-box;
 }
 
@@ -29,39 +34,41 @@
   padding: 0;
 }
 
-/* Header */
+/* ---- Header ---- */
 .ts-header {
   position: sticky;
   top: 0;
-  background: linear-gradient(135deg, #0f3460, #16213e);
-  padding: 14px 16px;
+  background: linear-gradient(135deg, #0d1b3e 0%, #162050 50%, #1a1a40 100%);
+  padding: 18px 20px 16px;
   z-index: 10;
-  border-bottom: 1px solid #1a1a4e;
+  border-bottom: 1px solid rgba(100, 120, 255, 0.12);
+  backdrop-filter: blur(12px);
 }
 
 .ts-header-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 14px;
 }
 
 .ts-title {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
   color: #fff;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 8px rgba(100, 140, 255, 0.3);
 }
 
 .ts-close-btn {
-  background: rgba(255,255,255,0.1);
-  border: none;
-  color: #aaa;
-  font-size: 18px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: #8888bb;
+  font-size: 16px;
   cursor: pointer;
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -69,100 +76,113 @@
 }
 
 .ts-close-btn:hover {
-  background: rgba(255,255,255,0.2);
-  color: #fff;
+  background: rgba(255,80,80,0.15);
+  border-color: rgba(255,80,80,0.25);
+  color: #ff6b6b;
 }
 
-/* Stats bar */
+/* ---- Stats ---- */
 .ts-stats {
   display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .ts-stat {
-  background: rgba(255,255,255,0.08);
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 11px;
-  color: #b0b0d0;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: #9999cc;
   white-space: nowrap;
+  backdrop-filter: blur(4px);
 }
 
 .ts-stat-number {
-  font-weight: 700;
+  font-weight: 800;
   color: #fff;
-  margin-right: 3px;
+  margin-right: 4px;
+  font-size: 13px;
 }
 
-/* Action bar */
+/* ---- Action bar ---- */
 .ts-action-bar {
   display: flex;
   gap: 8px;
-  padding: 10px 16px;
-  background: rgba(0,0,0,0.2);
-  border-bottom: 1px solid #1a1a4e;
+  padding: 12px 20px;
+  background: rgba(0,0,0,0.15);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
 }
 
 .ts-action-btn {
   flex: 1;
-  padding: 8px 12px;
+  padding: 9px 14px;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s;
+  letter-spacing: 0.3px;
 }
 
 .ts-action-btn.summary {
-  background: #2980b9;
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
   color: #fff;
+  box-shadow: 0 2px 12px rgba(37, 99, 235, 0.3);
 }
 
 .ts-action-btn.summary:hover {
-  background: #2471a3;
+  background: linear-gradient(135deg, #1d4ed8, #2563eb);
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4);
+  transform: translateY(-1px);
 }
 
-/* Category filter */
+/* ---- Categories ---- */
 .ts-categories {
   display: flex;
   gap: 6px;
-  padding: 10px 16px;
+  padding: 12px 20px;
   flex-wrap: wrap;
-  border-bottom: 1px solid #1a1a4e;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
 }
 
 .ts-category-badge {
-  padding: 3px 10px;
-  border-radius: 12px;
+  padding: 4px 12px;
+  border-radius: 20px;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   color: #fff;
-  opacity: 0.85;
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
-/* Tracker list */
+/* ---- Tracker list ---- */
 .ts-tracker-list {
-  padding: 8px 0;
+  padding: 6px 0 20px;
 }
 
+/* ---- Tracker card ---- */
 .ts-tracker-item {
-  padding: 12px 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  transition: background 0.2s;
+  margin: 8px 12px;
+  padding: 14px 16px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 12px;
+  transition: all 0.25s;
 }
 
 .ts-tracker-item:hover {
-  background: rgba(255,255,255,0.03);
+  background: rgba(255,255,255,0.055);
+  border-color: rgba(255,255,255,0.09);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
 }
 
 .ts-tracker-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 8px;
-  margin-bottom: 6px;
+  gap: 10px;
 }
 
 .ts-tracker-name-area {
@@ -172,15 +192,16 @@
 
 .ts-tracker-name {
   font-weight: 700;
-  color: #fff;
-  font-size: 13px;
+  color: #eeeeff;
+  font-size: 14px;
   word-break: break-word;
+  line-height: 1.3;
 }
 
 .ts-tracker-company {
   font-size: 11px;
-  color: #8888aa;
-  margin-top: 1px;
+  color: #7777aa;
+  margin-top: 3px;
 }
 
 .ts-tracker-right {
@@ -191,59 +212,39 @@
 }
 
 .ts-tracker-badge {
-  padding: 2px 8px;
-  border-radius: 10px;
+  padding: 3px 10px;
+  border-radius: 20px;
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 700;
   color: #fff;
   white-space: nowrap;
+  letter-spacing: 0.3px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
 }
 
 .ts-tracker-requests {
   font-size: 11px;
-  color: #8888aa;
+  font-weight: 600;
+  color: #7777aa;
   white-space: nowrap;
-}
-
-/* Sent data section */
-.ts-sent-data {
-  margin-top: 8px;
-}
-
-.ts-data-toggle {
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: #b0b0d0;
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 11px;
-  cursor: pointer;
-  transition: all 0.2s;
-  width: 100%;
-  text-align: left;
-}
-
-.ts-data-toggle:hover {
-  background: rgba(255,255,255,0.1);
-  color: #fff;
-}
-
-.ts-data-details {
-  display: none;
-  margin-top: 8px;
-  background: rgba(0,0,0,0.3);
+  background: rgba(255,255,255,0.05);
+  padding: 2px 8px;
   border-radius: 8px;
-  padding: 10px;
-  max-height: 300px;
+}
+
+/* ---- Data details (always visible) ---- */
+.ts-data-details {
+  margin-top: 12px;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 10px;
+  padding: 12px 14px;
+  max-height: 400px;
   overflow-y: auto;
 }
 
-.ts-data-details.open {
-  display: block;
-}
-
 .ts-data-section {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .ts-data-section:last-child {
@@ -251,15 +252,17 @@
 }
 
 .ts-data-section-title {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
-  color: #7878aa;
+  color: #6b6baa;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 4px;
+  letter-spacing: 0.8px;
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
 }
 
 .ts-data-table {
@@ -267,25 +270,36 @@
   border-collapse: collapse;
 }
 
+.ts-data-table tr {
+  border-bottom: 1px solid rgba(255,255,255,0.025);
+}
+
+.ts-data-table tr:last-child {
+  border-bottom: none;
+}
+
 .ts-data-table td {
-  padding: 2px 0;
+  padding: 3px 0;
   font-size: 11px;
   vertical-align: top;
   word-break: break-all;
+  line-height: 1.4;
 }
 
 .ts-data-table td:first-child {
-  color: #a0a0cc;
+  color: #8888bb;
   font-weight: 600;
-  padding-right: 8px;
+  padding-right: 12px;
   white-space: nowrap;
-  max-width: 100px;
+  max-width: 110px;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 10.5px;
 }
 
 .ts-data-table td:last-child {
-  color: #d0d0e0;
+  color: #b8b8d8;
   max-width: 200px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -293,81 +307,87 @@
 
 .ts-request-type {
   display: inline-block;
-  padding: 1px 6px;
-  border-radius: 4px;
+  padding: 2px 8px;
+  border-radius: 6px;
   font-size: 10px;
-  background: rgba(255,255,255,0.1);
-  color: #aaa;
+  font-weight: 600;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.05);
+  color: #9999bb;
   margin-right: 4px;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 
-/* Empty state */
+/* ---- Empty state ---- */
 .ts-empty {
   text-align: center;
-  padding: 40px 20px;
-  color: #666;
+  padding: 60px 30px;
+  color: #555;
 }
 
 .ts-empty-icon {
-  font-size: 40px;
-  margin-bottom: 12px;
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.7;
 }
 
 .ts-empty-text {
-  font-size: 14px;
-  color: #888;
+  font-size: 15px;
+  color: #7777aa;
+  font-weight: 500;
 }
 
-/* Toggle button (floating) */
+/* ---- Toggle button (floating tab) ---- */
 #tracker-sidebar-toggle {
   position: fixed;
   top: 50%;
   right: 0;
   transform: translateY(-50%);
   z-index: 2147483646;
-  background: linear-gradient(135deg, #0f3460, #16213e);
-  border: 1px solid #1a1a4e;
+  background: linear-gradient(180deg, #1a2050, #12123a);
+  border: 1px solid rgba(100, 120, 255, 0.15);
   border-right: none;
-  border-radius: 8px 0 0 8px;
+  border-radius: 10px 0 0 10px;
   color: #fff;
-  padding: 10px 6px;
+  padding: 12px 7px;
   cursor: pointer;
   font-size: 16px;
-  box-shadow: -2px 0 10px rgba(0,0,0,0.3);
-  transition: all 0.3s;
+  box-shadow: -3px 0 16px rgba(0,0,0,0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   writing-mode: vertical-lr;
   text-orientation: mixed;
   line-height: 1;
 }
 
 #tracker-sidebar-toggle:hover {
-  padding-right: 10px;
-  background: linear-gradient(135deg, #1a4f8e, #1c2d52);
+  padding-right: 12px;
+  background: linear-gradient(180deg, #1e2868, #1a1a50);
+  box-shadow: -4px 0 24px rgba(50, 80, 200, 0.3);
 }
 
 #tracker-sidebar-toggle.sidebar-open {
-  right: 380px;
+  right: 400px;
 }
 
 .ts-toggle-count {
   display: inline-block;
-  background: #e74c3c;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
   color: #fff;
   border-radius: 50%;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 800;
   text-align: center;
-  line-height: 18px;
+  line-height: 20px;
   writing-mode: horizontal-tb;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
 }
 
-/* Scrollbar */
+/* ---- Scrollbar ---- */
 #tracker-sidebar-container::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 
 #tracker-sidebar-container::-webkit-scrollbar-track {
@@ -375,24 +395,24 @@
 }
 
 #tracker-sidebar-container::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.1);
   border-radius: 3px;
 }
 
 #tracker-sidebar-container::-webkit-scrollbar-thumb:hover {
-  background: rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.2);
 }
 
 .ts-data-details::-webkit-scrollbar {
-  width: 4px;
+  width: 3px;
 }
 
 .ts-data-details::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.1);
   border-radius: 2px;
 }
 
-/* Summary overlay */
+/* ---- Summary overlay ---- */
 #ts-summary-overlay {
   position: fixed;
   top: 0;
@@ -411,20 +431,21 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
 }
 
 .ts-summary-modal {
   position: relative;
-  background: #1a1a2e;
-  border: 1px solid #2a2a4e;
-  border-radius: 12px;
-  width: 600px;
+  background: linear-gradient(180deg, #1a1a34 0%, #14142a 100%);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  width: 620px;
   max-width: 90vw;
   max-height: 80vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
@@ -432,78 +453,83 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
-  border-bottom: 1px solid #2a2a4e;
+  padding: 18px 22px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
   font-size: 16px;
   font-weight: 700;
   color: #fff;
 }
 
 .ts-summary-close {
-  background: rgba(255,255,255,0.1);
-  border: none;
-  color: #aaa;
-  font-size: 18px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.06);
+  color: #8888bb;
+  font-size: 16px;
   cursor: pointer;
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.2s;
 }
 
 .ts-summary-close:hover {
-  background: rgba(255,255,255,0.2);
-  color: #fff;
+  background: rgba(255,80,80,0.15);
+  color: #ff6b6b;
 }
 
 .ts-summary-text {
   flex: 1;
-  margin: 12px 20px;
-  padding: 14px;
-  background: #0d0d1a;
-  border: 1px solid #2a2a4e;
-  border-radius: 8px;
-  color: #d0d0e0;
-  font-family: 'Courier New', Courier, monospace;
+  margin: 14px 22px;
+  padding: 16px;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 10px;
+  color: #b8b8d8;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', 'Courier New', monospace;
   font-size: 12px;
-  line-height: 1.5;
+  line-height: 1.6;
   resize: none;
   min-height: 300px;
   overflow-y: auto;
 }
 
 .ts-summary-text:focus {
-  outline: 1px solid #4285f4;
+  outline: 1px solid rgba(59, 130, 246, 0.5);
+  border-color: rgba(59, 130, 246, 0.3);
 }
 
 .ts-summary-actions {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 20px 16px;
-  border-top: 1px solid #2a2a4e;
+  padding: 14px 22px 18px;
+  border-top: 1px solid rgba(255,255,255,0.06);
 }
 
 .ts-summary-copy {
-  background: #27ae60;
+  background: linear-gradient(135deg, #059669, #10b981);
   color: #fff;
   border: none;
-  border-radius: 8px;
-  padding: 8px 16px;
+  border-radius: 10px;
+  padding: 9px 20px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s;
+  box-shadow: 0 2px 12px rgba(5, 150, 105, 0.3);
 }
 
 .ts-summary-copy:hover {
-  background: #219a52;
+  background: linear-gradient(135deg, #047857, #059669);
+  box-shadow: 0 4px 20px rgba(5, 150, 105, 0.4);
+  transform: translateY(-1px);
 }
 
 .ts-summary-copied {
-  color: #27ae60;
+  color: #10b981;
   font-size: 13px;
   font-weight: 600;
 }

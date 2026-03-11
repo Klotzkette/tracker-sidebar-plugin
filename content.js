@@ -13,21 +13,21 @@
 
   // Category colors
   const CATEGORY_COLORS = {
-    "Analytics": "#4285f4",
-    "Werbung": "#ea4335",
-    "Social Tracking": "#1877f2",
-    "Tag Manager": "#f4b400",
-    "Einbettung": "#9c27b0",
-    "CDN": "#607d8b",
-    "Consent": "#4caf50",
-    "Chat/Support": "#00bcd4",
-    "Marketing": "#ff9800",
-    "Affiliate": "#795548",
-    "Social Sharing": "#e91e63",
-    "Sicherheit": "#2e7d32",
-    "Performance": "#3f51b5",
-    "Fehlertracking": "#ff5722",
-    "Unbekannt": "#9e9e9e"
+    "Analytics": "#3b82f6",
+    "Werbung": "#ef4444",
+    "Social Tracking": "#8b5cf6",
+    "Tag Manager": "#f59e0b",
+    "Einbettung": "#a855f7",
+    "CDN": "#6b7280",
+    "Consent": "#10b981",
+    "Chat/Support": "#06b6d4",
+    "Marketing": "#f97316",
+    "Affiliate": "#a16207",
+    "Social Sharing": "#ec4899",
+    "Sicherheit": "#059669",
+    "Performance": "#6366f1",
+    "Fehlertracking": "#f43f5e",
+    "Unbekannt": "#6b7280"
   };
 
   let currentData = null;
@@ -111,7 +111,7 @@
         <textarea class="ts-summary-text" readonly id="ts-summary-textarea">${esc(generateSummaryText(data))}</textarea>
         <div class="ts-summary-actions">
           <button class="ts-summary-copy" id="ts-summary-copy">Kopieren</button>
-          <span class="ts-summary-copied" id="ts-summary-copied" style="display:none">Kopiert</span>
+          <span class="ts-summary-copied" id="ts-summary-copied" style="display:none">Kopiert!</span>
         </div>
       </div>
     `;
@@ -142,7 +142,7 @@
   function trunc(str, max = 60) {
     if (!str) return '';
     const s = String(str);
-    return s.length > max ? s.substring(0, max) + '...' : s;
+    return s.length > max ? s.substring(0, max) + '\u2026' : s;
   }
 
   // ============================================================
@@ -161,9 +161,7 @@
     let html = `
       <div class="ts-header">
         <div class="ts-header-top">
-          <div class="ts-title">
-            Tracker Viewer
-          </div>
+          <div class="ts-title">Tracker Viewer</div>
           <button class="ts-close-btn" id="ts-close">&#10005;</button>
         </div>
         <div class="ts-stats">
@@ -181,7 +179,7 @@
     if (data.categories && Object.keys(data.categories).length > 0) {
       html += '<div class="ts-categories">';
       for (const [cat, count] of Object.entries(data.categories)) {
-        const color = CATEGORY_COLORS[cat] || '#9e9e9e';
+        const color = CATEGORY_COLORS[cat] || '#6b7280';
         html += `<span class="ts-category-badge" style="background:${color}">${esc(cat)} (${count})</span>`;
       }
       html += '</div>';
@@ -209,12 +207,14 @@
   }
 
   function renderTrackerItem(tracker) {
-    const color = CATEGORY_COLORS[tracker.category] || '#9e9e9e';
+    const color = CATEGORY_COLORS[tracker.category] || '#6b7280';
     const cookieCount = Object.keys(tracker.allCookies || {}).length;
     const paramCount = Object.keys(tracker.allParams || {}).length;
     const receivedCookieCount = (tracker.receivedCookies || []).length;
+    const hasData = cookieCount > 0 || paramCount > 0 || receivedCookieCount > 0 ||
+                    (tracker.requests?.length > 0) || tracker.requests?.some(r => r.sentData?.referer);
 
-    // Build data details HTML
+    // Build data details HTML — always visible, no toggle
     const dataSections = [];
 
     if (cookieCount > 0) {
@@ -229,7 +229,7 @@
       let rows = '';
       for (const cookie of tracker.receivedCookies) {
         const attrs = Object.keys(cookie.attributes || {}).join(', ');
-        rows += `<tr><td title="${esc(cookie.name)}">${esc(trunc(cookie.name, 30))}</td><td title="${esc(cookie.value)}">${esc(trunc(cookie.value))}${attrs ? ` <span style="color:#666">(${esc(attrs)})</span>` : ''}</td></tr>`;
+        rows += `<tr><td title="${esc(cookie.name)}">${esc(trunc(cookie.name, 30))}</td><td title="${esc(cookie.value)}">${esc(trunc(cookie.value))}${attrs ? ` <span style="color:#6b6baa;font-size:10px">(${esc(attrs)})</span>` : ''}</td></tr>`;
       }
       dataSections.push(`<div class="ts-data-section"><div class="ts-data-section-title">Cookies empfangen (${receivedCookieCount})</div><table class="ts-data-table">${rows}</table></div>`);
     }
@@ -254,7 +254,7 @@
 
     if (tracker.requests?.some(r => r.sentData?.referer)) {
       const referer = tracker.requests.find(r => r.sentData?.referer)?.sentData.referer;
-      dataSections.push(`<div class="ts-data-section"><div class="ts-data-section-title">Herkunft mitgeteilt</div><div style="font-size:11px;color:#d0d0e0;word-break:break-all">${esc(referer)}</div></div>`);
+      dataSections.push(`<div class="ts-data-section"><div class="ts-data-section-title">Herkunft mitgeteilt</div><div style="font-size:11px;color:#9999bb;word-break:break-all">${esc(referer)}</div></div>`);
     }
 
     const dataHtml = dataSections.join('');
@@ -271,12 +271,7 @@
             <span class="ts-tracker-requests">${tracker.requestCount}x</span>
           </div>
         </div>
-        ${dataHtml ? `
-          <div class="ts-sent-data">
-            <button class="ts-data-toggle">&#9654; Was wird gesendet?</button>
-            <div class="ts-data-details">${dataHtml}</div>
-          </div>
-        ` : ''}
+        ${hasData ? `<div class="ts-data-details">${dataHtml}</div>` : ''}
       </div>
     `;
   }
@@ -287,16 +282,6 @@
   function attachEventListeners(data) {
     sidebar.querySelector('#ts-close')?.addEventListener('click', () => toggleSidebar());
     sidebar.querySelector('#ts-show-summary')?.addEventListener('click', () => showSummaryOverlay(data));
-
-    sidebar.querySelectorAll('.ts-data-toggle').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const details = btn.nextElementSibling;
-        if (details) {
-          details.classList.toggle('open');
-          btn.textContent = details.classList.contains('open') ? '\u25BE Ausblenden' : '\u25B8 Was wird gesendet?';
-        }
-      });
-    });
   }
 
   // ============================================================

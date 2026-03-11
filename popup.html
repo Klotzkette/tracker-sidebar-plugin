@@ -5,84 +5,94 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      width: 320px;
+      width: 300px;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #1a1a2e;
-      color: #e0e0e0;
+      background: linear-gradient(180deg, #12122a 0%, #1a1a34 100%);
+      color: #c8c8e0;
       font-size: 13px;
     }
     .header {
-      background: linear-gradient(135deg, #0f3460, #16213e);
-      padding: 16px;
+      background: linear-gradient(135deg, #0d1b3e 0%, #162050 50%, #1a1a40 100%);
+      padding: 20px 18px 16px;
       text-align: center;
+      border-bottom: 1px solid rgba(100, 120, 255, 0.1);
     }
     .header h1 {
-      font-size: 16px;
+      font-size: 17px;
+      font-weight: 700;
       color: #fff;
       margin-bottom: 4px;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.5px;
+      text-shadow: 0 1px 8px rgba(100, 140, 255, 0.25);
     }
     .header p {
       font-size: 11px;
-      color: #8888aa;
+      color: #7777aa;
     }
     .stats {
       display: flex;
       justify-content: center;
-      gap: 12px;
-      padding: 14px;
-      background: rgba(0,0,0,0.2);
+      gap: 16px;
+      padding: 18px;
+      background: rgba(0,0,0,0.15);
     }
     .stat {
       text-align: center;
     }
     .stat-number {
-      font-size: 24px;
-      font-weight: 700;
+      font-size: 28px;
+      font-weight: 800;
       color: #fff;
+      line-height: 1.1;
     }
     .stat-label {
       font-size: 10px;
-      color: #8888aa;
+      color: #7777aa;
       text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 2px;
     }
     .info {
-      padding: 14px;
+      padding: 16px 18px;
       text-align: center;
-      color: #8888aa;
+      color: #7777aa;
       font-size: 12px;
       line-height: 1.5;
     }
-    .info strong { color: #b0b0d0; }
+    .info strong { color: #9999cc; }
     .actions {
-      padding: 10px 14px 14px;
-      display: flex;
-      gap: 8px;
+      padding: 4px 18px 18px;
     }
     .btn {
-      flex: 1;
-      padding: 8px;
+      display: block;
+      width: 100%;
+      padding: 10px;
       border: none;
-      border-radius: 8px;
-      font-size: 12px;
+      border-radius: 10px;
+      font-size: 13px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.25s;
+      letter-spacing: 0.3px;
     }
     .btn-toggle {
-      background: #0f3460;
+      background: linear-gradient(135deg, #2563eb, #3b82f6);
       color: #fff;
+      box-shadow: 0 2px 12px rgba(37, 99, 235, 0.3);
     }
-    .btn-toggle:hover { background: #1a4f8e; }
+    .btn-toggle:hover {
+      background: linear-gradient(135deg, #1d4ed8, #2563eb);
+      box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4);
+    }
     .privacy {
-      padding: 10px 14px 14px;
+      padding: 12px 18px 14px;
       text-align: center;
       font-size: 10px;
       color: #4a4a6a;
       line-height: 1.4;
-      border-top: 1px solid rgba(255,255,255,0.05);
+      border-top: 1px solid rgba(255,255,255,0.04);
     }
-    .privacy strong { color: #27ae60; }
+    .privacy strong { color: #10b981; }
   </style>
 </head>
 <body>
@@ -92,23 +102,22 @@
   </div>
   <div class="stats">
     <div class="stat">
-      <div class="stat-number" id="tracker-count">-</div>
+      <div class="stat-number" id="tracker-count">&ndash;</div>
       <div class="stat-label">Tracker</div>
     </div>
     <div class="stat">
-      <div class="stat-number" id="request-count">-</div>
+      <div class="stat-number" id="request-count">&ndash;</div>
       <div class="stat-label">Anfragen</div>
     </div>
   </div>
   <div class="info">
-    Am rechten Seitenrand siehst du den <strong>Tracker</strong>-Tab &mdash; dort findest du alle Details.
+    Am rechten Seitenrand findest du den <strong>Tracker</strong>-Tab &mdash; klicke darauf f&uuml;r alle Details.
   </div>
   <div class="actions">
     <button class="btn btn-toggle" id="toggle-sidebar">&Uuml;bersicht &ouml;ffnen</button>
   </div>
   <div class="privacy">
-    <strong>Arbeitet vollst&auml;ndig lokal</strong><br>
-    Keine Daten verlassen deinen Browser. Alles bleibt bei dir.
+    <strong>100% lokal</strong> &mdash; Keine Daten verlassen deinen Browser.
   </div>
   <script src="popup.js"></script>
 </body>
