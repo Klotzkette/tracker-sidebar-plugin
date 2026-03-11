@@ -1,12 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "Wer trackt wen warum wozu",
-  "version": "1.2.0",
-  "description": "Zeigt transparent, welche Tracker auf jeder Website aktiv sind, welche Daten sie sammeln und warum. Mehr Privatsphaere mit einem Klick.",
+  "name": "Tracker Viewer",
+  "version": "1.0.0",
+  "description": "Zeigt transparent, welche Tracker auf jeder Website aktiv sind, welche Daten sie sammeln und warum.",
   "permissions": [
     "webRequest",
-    "declarativeNetRequest",
-    "declarativeNetRequestFeedback",
     "cookies",
     "storage",
     "activeTab",

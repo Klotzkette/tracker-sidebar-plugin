@@ -1,5 +1,5 @@
 /**
- * Wer trackt wen warum wozu - Content Script
+ * Tracker Viewer - Content Script
  *
  * DATENSCHUTZ: Dieses Script arbeitet ausschließlich lokal.
  * Es werden keine Daten an externe Server übermittelt.
@@ -32,13 +32,7 @@
 
   let currentData = null;
   let sidebarVisible = false;
-  let blockedDomains = {};
   let renderPending = false;
-
-  // Load blocked domains from storage
-  chrome.storage?.local?.get(['blockedDomains'], (result) => {
-    if (result?.blockedDomains) blockedDomains = result.blockedDomains;
-  });
 
   // ============================================================
   // DOM Setup
@@ -65,62 +59,21 @@
   }
 
   // ============================================================
-  // Blocking (with stealth - tracker gets fake data, not an error)
-  // ============================================================
-  function saveBlockedDomains() {
-    chrome.storage?.local?.set({ blockedDomains });
-  }
-
-  function gracefulReload() {
-    // Wait for declarativeNetRequest rules to be applied before reloading
-    setTimeout(() => {
-      try { location.reload(); } catch { window.location.href = window.location.href; }
-    }, 500);
-  }
-
-  function blockDomain(hostname) {
-    blockedDomains[hostname] = true;
-    saveBlockedDomains();
-    chrome.runtime.sendMessage({ type: 'UPDATE_BLOCK_RULES', blockedDomains }, () => gracefulReload());
-  }
-
-  function unblockDomain(hostname) {
-    delete blockedDomains[hostname];
-    saveBlockedDomains();
-    chrome.runtime.sendMessage({ type: 'UPDATE_BLOCK_RULES', blockedDomains }, () => gracefulReload());
-  }
-
-  function blockAll(trackers) {
-    for (const t of trackers) blockedDomains[t.hostname] = true;
-    saveBlockedDomains();
-    chrome.runtime.sendMessage({ type: 'UPDATE_BLOCK_RULES', blockedDomains }, () => gracefulReload());
-  }
-
-  function unblockAll() {
-    blockedDomains = {};
-    saveBlockedDomains();
-    chrome.runtime.sendMessage({ type: 'UPDATE_BLOCK_RULES', blockedDomains }, () => gracefulReload());
-  }
-
-  // ============================================================
   // Summary text generation
   // ============================================================
   function generateSummaryText(data) {
     const date = new Date().toLocaleString('de-DE');
-    const blockedCount = Object.keys(blockedDomains).length;
     const lines = [
-      '=== WER TRACKT WEN WARUM WOZU ===',
+      '=== TRACKER VIEWER ===',
       `Website: ${location.href}`,
       `Datum: ${date}`,
       `Aktive Tracker: ${data.totalTrackers}`,
       `Anfragen: ${data.totalRequests}`,
+      '', '--- Tracker-Liste ---', ''
     ];
-    if (blockedCount > 0) lines.push(`Privat geschuetzt: ${blockedCount}`);
-    lines.push('', '--- Tracker-Liste ---', '');
 
     for (const tracker of data.trackers) {
-      const isBlocked = blockedDomains[tracker.hostname];
-      lines.push(`${tracker.name}${isBlocked ? ' [geschuetzt]' : ''}`);
+      lines.push(`${tracker.name}`);
       lines.push(`  Firma: ${tracker.company}`);
       lines.push(`  Domain: ${tracker.hostname}`);
       lines.push(`  Kategorie: ${tracker.category}`);
@@ -135,16 +88,7 @@
       const paramCount = Object.keys(tracker.allParams || {}).length;
       if (paramCount > 0) lines.push(`  URL-Parameter (${paramCount}): ${Object.keys(tracker.allParams).join(', ')}`);
 
-      if (isBlocked) lines.push(`  Status: Privatsphaere geschuetzt`);
       lines.push('');
-    }
-
-    const currentHostnames = new Set(data.trackers.map(t => t.hostname));
-    for (const hostname of Object.keys(blockedDomains)) {
-      if (!currentHostnames.has(hostname)) {
-        lines.push(`${hostname} [geschuetzt]`);
-        lines.push('');
-      }
     }
 
     lines.push('=== ENDE ===');
@@ -161,7 +105,7 @@
       <div class="ts-summary-backdrop"></div>
       <div class="ts-summary-modal">
         <div class="ts-summary-header">
-          <span>Wer trackt hier &mdash; Zusammenfassung</span>
+          <span>Tracker Viewer &mdash; Zusammenfassung</span>
           <button class="ts-summary-close" id="ts-summary-close">&#10005;</button>
         </div>
         <textarea class="ts-summary-text" readonly id="ts-summary-textarea">${esc(generateSummaryText(data))}</textarea>
@@ -214,35 +158,23 @@
   }
 
   function renderSidebar(data) {
-    const blockedCount = Object.keys(blockedDomains).length;
-    const hasBlockedAny = blockedCount > 0;
-
     let html = `
       <div class="ts-header">
         <div class="ts-header-top">
           <div class="ts-title">
-            Wer trackt wen warum wozu
+            Tracker Viewer
           </div>
           <button class="ts-close-btn" id="ts-close">&#10005;</button>
         </div>
         <div class="ts-stats">
           <span class="ts-stat"><span class="ts-stat-number">${data.totalTrackers}</span> Tracker</span>
           <span class="ts-stat"><span class="ts-stat-number">${data.totalRequests}</span> Anfragen</span>
-          ${blockedCount > 0 ? `<span class="ts-stat ts-stat-stealth"><span class="ts-stat-number">${blockedCount}</span> gesch&uuml;tzt</span>` : ''}
         </div>
       </div>
 
-      <div class="ts-block-all-bar">
-        <button class="ts-block-all-btn block" id="ts-block-all">Alle sch&uuml;tzen</button>
-        ${hasBlockedAny ? `<button class="ts-block-all-btn unblock" id="ts-unblock-all">Alle zulassen</button>` : ''}
-        <button class="ts-block-all-btn summary" id="ts-show-summary">Zusammenfassung</button>
+      <div class="ts-action-bar">
+        <button class="ts-action-btn summary" id="ts-show-summary">Zusammenfassung</button>
       </div>
-
-      ${hasBlockedAny ? `
-        <div class="ts-stealth-banner">
-          <span>Mehr Privatsph&auml;re: ${blockedCount} Tracker k&ouml;nnen dich auf dieser Seite nicht mehr verfolgen</span>
-        </div>
-      ` : ''}
     `;
 
     // Category badges
@@ -258,7 +190,7 @@
     // Tracker list
     html += '<div class="ts-tracker-list">';
 
-    if (data.trackers.length === 0 && blockedCount === 0) {
+    if (data.trackers.length === 0) {
       html += `
         <div class="ts-empty">
           <div class="ts-empty-icon">&#9989;</div>
@@ -266,14 +198,8 @@
         </div>
       `;
     } else {
-      const currentHostnames = new Set(data.trackers.map(t => t.hostname));
       for (const tracker of data.trackers) {
-        html += renderTrackerItem(tracker, !!blockedDomains[tracker.hostname]);
-      }
-      for (const hostname of Object.keys(blockedDomains)) {
-        if (!currentHostnames.has(hostname)) {
-          html += renderBlockedPlaceholder(hostname);
-        }
+        html += renderTrackerItem(tracker);
       }
     }
 
@@ -282,7 +208,7 @@
     attachEventListeners(data);
   }
 
-  function renderTrackerItem(tracker, isBlocked) {
+  function renderTrackerItem(tracker) {
     const color = CATEGORY_COLORS[tracker.category] || '#9e9e9e';
     const cookieCount = Object.keys(tracker.allCookies || {}).length;
     const paramCount = Object.keys(tracker.allParams || {}).length;
@@ -334,7 +260,7 @@
     const dataHtml = dataSections.join('');
 
     return `
-      <div class="ts-tracker-item ${isBlocked ? 'blocked' : ''}">
+      <div class="ts-tracker-item">
         <div class="ts-tracker-header">
           <div class="ts-tracker-name-area">
             <div class="ts-tracker-name">${esc(tracker.name)}</div>
@@ -343,13 +269,8 @@
           <div class="ts-tracker-right">
             <span class="ts-tracker-badge" style="background:${color}">${esc(tracker.category)}</span>
             <span class="ts-tracker-requests">${tracker.requestCount}x</span>
-            <label class="ts-block-toggle" title="${isBlocked ? 'Geschuetzt - klicken zum Zulassen' : 'Aktiv - klicken zum Schuetzen'}">
-              <input type="checkbox" class="ts-block-input" data-hostname="${esc(tracker.hostname)}" ${isBlocked ? 'checked' : ''}>
-              <span class="ts-block-slider"></span>
-            </label>
           </div>
         </div>
-        ${isBlocked ? '<div class="ts-blocked-label">Privatsph&auml;re gesch&uuml;tzt</div>' : ''}
         ${dataHtml ? `
           <div class="ts-sent-data">
             <button class="ts-data-toggle">&#9654; Was wird gesendet?</button>
@@ -360,34 +281,11 @@
     `;
   }
 
-  function renderBlockedPlaceholder(hostname) {
-    return `
-      <div class="ts-tracker-item blocked">
-        <div class="ts-tracker-header">
-          <div class="ts-tracker-name-area">
-            <div class="ts-tracker-name">${esc(hostname)}</div>
-            <div class="ts-tracker-company">Geschuetzt</div>
-          </div>
-          <div class="ts-tracker-right">
-            <span class="ts-tracker-badge" style="background:#4caf50">Geschuetzt</span>
-            <label class="ts-block-toggle" title="Geschuetzt - klicken zum Zulassen">
-              <input type="checkbox" class="ts-block-input" data-hostname="${esc(hostname)}" checked>
-              <span class="ts-block-slider"></span>
-            </label>
-          </div>
-        </div>
-        <div class="ts-blocked-label">Privatsph&auml;re gesch&uuml;tzt &mdash; kann dich nicht verfolgen</div>
-      </div>
-    `;
-  }
-
   // ============================================================
   // Event listeners (attached after render)
   // ============================================================
   function attachEventListeners(data) {
     sidebar.querySelector('#ts-close')?.addEventListener('click', () => toggleSidebar());
-    sidebar.querySelector('#ts-block-all')?.addEventListener('click', () => blockAll(data.trackers));
-    sidebar.querySelector('#ts-unblock-all')?.addEventListener('click', () => unblockAll());
     sidebar.querySelector('#ts-show-summary')?.addEventListener('click', () => showSummaryOverlay(data));
 
     sidebar.querySelectorAll('.ts-data-toggle').forEach(btn => {
@@ -397,14 +295,6 @@
           details.classList.toggle('open');
           btn.textContent = details.classList.contains('open') ? '\u25BE Ausblenden' : '\u25B8 Was wird gesendet?';
         }
-      });
-    });
-
-    sidebar.querySelectorAll('.ts-block-input').forEach(input => {
-      input.addEventListener('change', (e) => {
-        const hostname = e.target.dataset.hostname;
-        if (e.target.checked) blockDomain(hostname);
-        else unblockDomain(hostname);
       });
     });
   }

@@ -1,35 +1,22 @@
 /**
- * Wer trackt wen warum wozu - Background Service Worker
+ * Tracker Viewer - Background Service Worker
  *
  * DATENSCHUTZ-HINWEIS:
  * Dieses Plugin arbeitet zu 100% lokal im Browser.
  * Es werden KEINE Daten an externe Server, Dritte oder den Entwickler gesendet.
- * Alle Tracker-Analysen, Cookie-Auswertungen und Blockierungen finden
+ * Alle Tracker-Analysen und Cookie-Auswertungen finden
  * ausschließlich lokal auf dem Gerät des Nutzers statt.
- * Es gibt keinen fetch(), XMLHttpRequest, WebSocket oder sonstigen
- * ausgehenden Netzwerkverkehr durch dieses Plugin.
  */
-importScripts('trackers.js', 'stealth.js');
+importScripts('trackers.js');
 
 // ============================================================
 // State
 // ============================================================
 const tabTrackers = {};   // tabId -> { hostname -> trackerData }
 const tabUrls = {};       // tabId -> pageUrl (cache to avoid async tab lookup)
-let blockedDomains = {};  // hostname -> true
 
 // Pending UI updates: debounce to avoid spamming content scripts
 const pendingUpdates = {}; // tabId -> timeoutId
-
-// ============================================================
-// Startup: load persisted blocked domains & apply rules
-// ============================================================
-chrome.storage.local.get(['blockedDomains'], (result) => {
-  if (result?.blockedDomains) {
-    blockedDomains = result.blockedDomains;
-    updateBlockRules();
-  }
-});
 
 // ============================================================
 // Tab URL tracking (avoids expensive chrome.tabs.get in hot path)
@@ -223,7 +210,7 @@ function getTabSummary(tabId) {
     allCookies: t.allCookies,
     allParams: t.allParams,
     receivedCookies: t.receivedCookies,
-    requests: t.requests.slice(-20).map(r => ({ // limit to last 20 requests per tracker
+    requests: t.requests.slice(-20).map(r => ({
       url: r.url,
       type: r.type,
       method: r.sentData.method,
@@ -256,64 +243,6 @@ function getTabSummary(tabId) {
 }
 
 // ============================================================
-// Stealth Blocking via declarativeNetRequest
-// ============================================================
-// Strategy: Redirect tracker requests to data URIs containing
-// plausible fake data. The tracker receives a valid response with
-// pseudonymized garbage data, so:
-//   - The website doesn't crash (no network errors)
-//   - The tracker can't detect it was blocked (valid response)
-//   - Scripts get stub functions that prevent "undefined" errors
-//   - Pixels get a valid 1x1 GIF
-//   - XHR/fetch gets a valid JSON { status: "ok" }
-//   - iframes get empty HTML
-
-async function updateBlockRules() {
-  try {
-    const existingRules = await chrome.declarativeNetRequest.getDynamicRules();
-    const removeRuleIds = existingRules.map(r => r.id);
-
-    const domains = Object.keys(blockedDomains);
-    const addRules = [];
-
-    // Resource types grouped by what kind of fake response they need
-    const RESOURCE_GROUPS = [
-      { types: ['script'], stealthType: 'script' },
-      { types: ['image', 'ping'], stealthType: 'image' },
-      { types: ['xmlhttprequest'], stealthType: 'xmlhttprequest' },
-      { types: ['sub_frame'], stealthType: 'sub_frame' },
-      { types: ['stylesheet'], stealthType: 'stylesheet' },
-      { types: ['font', 'media', 'other'], stealthType: 'other' }
-    ];
-
-    domains.forEach((domain, domainIdx) => {
-      RESOURCE_GROUPS.forEach((group, groupIdx) => {
-        const ruleId = (domainIdx * RESOURCE_GROUPS.length) + groupIdx + 1;
-        addRules.push({
-          id: ruleId,
-          priority: 1,
-          action: {
-            type: 'redirect',
-            redirect: { url: getStealthRedirectURL(group.stealthType, domain) }
-          },
-          condition: {
-            urlFilter: `||${domain}`,
-            resourceTypes: group.types
-          }
-        });
-      });
-    });
-
-    await chrome.declarativeNetRequest.updateDynamicRules({
-      removeRuleIds,
-      addRules
-    });
-  } catch (err) {
-    console.error('Tracker Sidebar: Error updating block rules:', err);
-  }
-}
-
-// ============================================================
 // Message handling
 // ============================================================
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -333,13 +262,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       return true;
     }
     sendResponse([]);
-    return true;
-  }
-
-  if (message.type === 'UPDATE_BLOCK_RULES') {
-    blockedDomains = message.blockedDomains || {};
-    chrome.storage.local.set({ blockedDomains });
-    updateBlockRules().then(() => sendResponse({ success: true }));
     return true;
   }
 });

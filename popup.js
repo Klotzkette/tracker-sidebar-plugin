@@ -10,11 +10,6 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     }
   });
 
-  chrome.storage.local.get(['blockedDomains'], (result) => {
-    const blocked = result?.blockedDomains || {};
-    document.getElementById('blocked-count').textContent = Object.keys(blocked).length;
-  });
-
   // Toggle sidebar button
   document.getElementById('toggle-sidebar').addEventListener('click', () => {
     chrome.tabs.sendMessage(tabId, { type: 'TOGGLE_SIDEBAR' });
