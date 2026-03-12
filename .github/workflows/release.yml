@@ -17,12 +17,12 @@ jobs:
           mkdir -p plugin-build
           cp manifest.json background.js content.js popup.html popup.js sidebar.css stealth.js trackers.js plugin-build/
           cd plugin-build
-          zip -r ../tracker-sidebar-plugin-v1.2.0.zip .
+          zip -r ../tracker-sidebar-plugin-v1.3.0.zip .
 
       - name: Upload ZIP to release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.2.0
-          files: tracker-sidebar-plugin-v1.2.0.zip
+          tag_name: v1.3.0
+          files: tracker-sidebar-plugin-v1.3.0.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
