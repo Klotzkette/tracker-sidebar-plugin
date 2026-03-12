@@ -1,0 +1,28 @@
+name: Build and Upload Plugin ZIP
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-zip:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create plugin ZIP
+        run: |
+          mkdir -p plugin-build
+          cp manifest.json background.js content.js popup.html popup.js sidebar.css stealth.js trackers.js plugin-build/
+          cd plugin-build
+          zip -r ../tracker-sidebar-plugin-v1.2.0.zip .
+
+      - name: Upload ZIP to release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.2.0
+          files: tracker-sidebar-plugin-v1.2.0.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
